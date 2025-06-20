@@ -1,0 +1,49 @@
+server:
+      port: 8077
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8010/realms/emiter
+  application:
+    name: upload-service
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/auction_items
+    username: postgres
+    password: postgres
+  server:
+    error:
+      include-message: always
+  kafka:
+    topics:
+      produce:
+        auctionCreate: auction-service-event
+      consume:
+        quartzFinished: quartz-service-event
+    bootstrap-servers: localhost:9093
+    consumer:
+      group-id: auction-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+
+minio:
+  url: ${MINIO_HOST:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY:iUvQG59Mpm8mtLiGyD7Y}
+  secret-key: ${MINIO_SECRET_KEY:zePfV7XWQnk6ExAmhRW5RmLOCdusdwvwBWw6EOiT}
+  buckets:
+    auction-image-bucket: auction-images
+

@@ -1,0 +1,7 @@
+
+minio:
+  endpoint: ${MINIO_HOST:http://localhost:9000/}
+  access-key: ${MINIO_ACCESS_KEY:iUvQG59Mpm8mtLiGyD7Y}
+  secret-key: ${MINIO_SECRET_KEY:zePfV7XWQnk6ExAmhRW5RmLOCdusdwvwBWw6EOiT}
+  buckets:
+    auction-image-bucket: auction-images

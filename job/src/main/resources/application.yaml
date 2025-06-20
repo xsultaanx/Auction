@@ -1,0 +1,43 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/quartz_job
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: never
+    properties:
+      org.quartz.jobStore.class: org.quartz.impl.jdbcjobstore.JobStoreTX
+      org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+      org.quartz.jobStore.tablePrefix: QRTZ_
+      org.quartz.jobStore.dataSource: quartzDataSource
+
+      org.quartz.threadPool.threadCount: 300
+      org.quartz.threadPool.threadPriority: 5
+
+      org.quartz.dataSource.quartzDataSource.provider: hikaricp
+      org.quartz.dataSource.quartzDataSource.driver: org.postgresql.Driver
+      org.quartz.dataSource.quartzDataSource.URL: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/quartz_job
+      org.quartz.dataSource.quartzDataSource.user: postgres
+      org.quartz.dataSource.quartzDataSource.password: postgres
+  kafka:
+    topics:
+      produce:
+        quartz: quartz-service-event
+      consume:
+        auction-service: auction-service-event
+
+    bootstrap-servers: localhost:9093
+    consumer:
+      group-id: quartz-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+server:
+  port: 8099

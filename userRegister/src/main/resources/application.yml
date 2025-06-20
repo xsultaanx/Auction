@@ -1,0 +1,38 @@
+server:
+  port: 8022
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: legal
+            client-secret: a866CGcL4IwFIDemNWD5teNDpxTFtLGl
+            authorization-grant-type: password
+            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8010/realms/emiter
+            user-name-attribute: preferred_username
+            token-uri: http://localhost:8010/realms/emiter/protocol/openid-connect/token
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/auction_users
+    username: postgres
+    password: postgres
+
+keycloak:
+  realm: emiter
+  auth-server-url: http://localhost:8010
+  user-client:
+    client-id: emiter
+    client-secret: a866CGcL4IwFIDemNWD5teNDpxTFtLGl
+  admin-cli:
+    client-id: admin-cli
+    username: admin
+    password: admin
+

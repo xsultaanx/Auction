@@ -1,0 +1,54 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/quartz_job
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 300
+      minimum-idle: 50
+      connection-timeout: 10000
+      idle-timeout: 300000
+      max-lifetime: 900000
+      validation-timeout: 5000
+      leak-detection-threshold: 60000
+
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: always  # ??? always, ???? ??????? ??? ?? ???????
+    properties:
+      org.quartz.scheduler.instanceName: highPerformanceScheduler
+      org.quartz.scheduler.instanceId: AUTO
+      org.quartz.scheduler.batchTriggerAcquisitionMaxCount: 100
+
+      org.quartz.threadPool.class: org.quartz.simpl.SimpleThreadPool
+      org.quartz.threadPool.threadCount: 300
+      org.quartz.threadPool.threadPriority: 5
+
+      # ???????????? ? JobStoreTX ?????? JobStoreCMT ??? ????????? ?????????
+      org.quartz.jobStore.class: org.quartz.impl.jdbcjobstore.JobStoreTX
+      org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+      org.quartz.jobStore.useProperties: true
+      org.quartz.jobStore.tablePrefix: QRTZ_
+      org.quartz.jobStore.isClustered: true
+      org.quartz.jobStore.clusterCheckinInterval: 5000
+      org.quartz.jobStore.acquireTriggersWithinLock: true
+      org.quartz.jobStore.misfireThreshold: 10000
+      org.quartz.jobStore.maxMisfiresToHandleAtATime: 100
+
+      # ????? ????????? ???? ??? ????????? ??????
+      org.quartz.jobStore.dataSource: quartzDataSource
+
+      org.quartz.scheduler.skipUpdateCheck: true
+      org.quartz.scheduler.interruptJobsOnShutdown: true
+      org.quartz.scheduler.interruptJobsOnShutdownWithWait: true
+      org.quartz.scheduler.dbFailureRetryInterval: 1000
+
+      # ????????? ????????? ??????
+      org.quartz.dataSource.quartzDataSource.provider: hikaricp
+      org.quartz.dataSource.quartzDataSource.driver: org.postgresql.Driver
+      org.quartz.dataSource.quartzDataSource.URL: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/quartz_job
+      org.quartz.dataSource.quartzDataSource.user: postgres
+      org.quartz.dataSource.quartzDataSource.password: postgres
+      org.quartz.dataSource.quartzDataSource.maxConnections: 300
