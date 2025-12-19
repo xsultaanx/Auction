@@ -37,10 +37,8 @@ public class UserService {
             log.info("User with email {} already exists", user.getEmail());
             throw new RuntimeException("User with email " + user.getEmail() + " already exists");
         }
-        // Сохраняем пользователя в локальной БД
         User savedUser = userRepository.save(user);
 
-        // Создаём пользователя в Keycloak
         UserRepresentation userRepresentation = new UserRepresentation();
         userRepresentation.setEnabled(true);
         userRepresentation.setUsername(user.getUsername());
@@ -49,7 +47,6 @@ public class UserService {
         userRepresentation.setLastName(user.getLastName());
         userRepresentation.setEmailVerified(true);
 
-        // Устанавливаем пароль
         CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
         credentialRepresentation.setTemporary(false);
         credentialRepresentation.setType(CredentialRepresentation.PASSWORD);

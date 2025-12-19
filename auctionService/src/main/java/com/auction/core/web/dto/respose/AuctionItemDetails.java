@@ -1,10 +1,11 @@
-package org.auction.common.entity;
+package com.auction.core.web.dto.respose;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.auction.common.entity.AuctionItem;
+import org.auction.common.entity.Bid;
+import org.auction.common.entity.Category;
+import org.auction.common.entity.ItemImage;
 import org.auction.common.enums.AuctionStatus;
 
 import java.math.BigDecimal;
@@ -12,15 +13,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-@Entity
-@Table(name = "auction_items")
-@AllArgsConstructor
-@Builder
-@NoArgsConstructor
 @Data
-public class AuctionItem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+public class AuctionItemDetails {
     private UUID id;
 
     private String title;
@@ -29,7 +23,6 @@ public class AuctionItem {
     private BigDecimal currentPrice;
     private BigDecimal minStepPrice;
 
-    @Enumerated(EnumType.STRING)
     private AuctionStatus status;
 
     private LocalDateTime startTime;
@@ -39,15 +32,14 @@ public class AuctionItem {
 
     private UUID userId;
 
-    @OneToMany(mappedBy = "auctionItem", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private int bidsCount;
+
     private List<Bid> bids;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "auction_item_id")
     private List<ItemImage> itemImages;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
     private Category category;
+
+
 
 }

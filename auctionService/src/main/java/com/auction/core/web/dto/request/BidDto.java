@@ -7,6 +7,6 @@ import java.util.UUID;
 @Data
 public class BidDto {
     private BigDecimal amount;
-    private UUID auctionItemId;
+    private String auctionItemId;
     private UUID userId;
 }

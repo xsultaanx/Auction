@@ -14,6 +14,7 @@ import com.auction.core.web.dto.request.BidDto;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -32,7 +33,7 @@ public class BidServiceImpl implements BidService {
     }
 
     public Bid placeBid(BidDto bidDto) {
-        AuctionItem item = auctionItemRepository.findById(bidDto.getAuctionItemId())
+        AuctionItem item = auctionItemRepository.findById(UUID.fromString(bidDto.getAuctionItemId()))
                 .orElseThrow(() -> new RuntimeException("Лот не найден"));
         if(!auctionService.checkAuctionActive(item)){
             throw new RuntimeException();
@@ -47,6 +48,11 @@ public class BidServiceImpl implements BidService {
         bid.setAuctionItem(item);
         bid.setUserId(user);
         return bidRepository.save(bid);
+    }
+
+    @Override
+    public List<Bid> getBidsForAuction(UUID auctionId) {
+        return bidRepository.findByAuctionItem_Id(auctionId);
     }
 
     private void validateNextBid(BigDecimal step, BigDecimal amount) {

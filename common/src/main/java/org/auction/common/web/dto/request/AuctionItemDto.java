@@ -7,6 +7,7 @@ import org.auction.common.enums.AuctionStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,8 +21,8 @@ public class AuctionItemDto {
     private BigDecimal startingPrice; // Начальная цена
     private BigDecimal currentPrice; // Текущая ставка
     private AuctionStatus status; // Статус аукциона
-    private LocalDateTime startTime; // Время начала
-    private LocalDateTime endTime; // Время завершения
+    private OffsetDateTime startTime;
+    private OffsetDateTime endTime;
     private BigDecimal minStepPrice; // Минимальный шаг ставки
     private UUID userId;
 

@@ -39,10 +39,9 @@ public class KeycloakProvider {
 
 
     @PostMapping("/loginWith")
-    public String loginWith(@RequestParam String username, @RequestParam String password) {
+    public String loginWith(@RequestParam String username, @RequestParam String password) throws InterruptedException {
         RestTemplate restTemplate = new RestTemplate();
-
-
+        Thread.sleep(1000);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         System.out.println(username);

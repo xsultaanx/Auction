@@ -2,6 +2,7 @@ package com.auction.core.service.auctionItem;
 
 import lombok.RequiredArgsConstructor;
 import org.auction.common.entity.AuctionItem;
+import org.auction.common.entity.Bid;
 import org.auction.common.entity.ItemImage;
 import org.auction.common.enums.AuctionEventType;
 import org.auction.common.enums.AuctionStatus;
@@ -14,6 +15,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -30,7 +32,7 @@ public class AuctionServiceImpl implements AuctionService {
 
 //    @Value("${minio.url}")
 //    private String minioUrl;
-    private String minioUrl = "http://172.20.10.3:9000";
+    private String minioUrl = "http://192.168.31.82:9000";
 
     public void create(AuctionItem auctionItem, List<MultipartFile> files) {
         List<ItemImage> itemImages = files.stream()
@@ -63,8 +65,20 @@ public class AuctionServiceImpl implements AuctionService {
 
     @Override
     public void updateStatus(AuctionCreateEvent auctionEvent) {
-        AuctionItem auctionItem = auctionItemRepository.findById(auctionEvent.getAuctionId()).orElseThrow();
-        auctionItem.setStatus(AuctionStatus.FINISHED);
+        AuctionItem auctionItem = auctionItemRepository.findByIdWithBids(auctionEvent.getAuctionId()).orElseThrow();
+        List<Bid> bids = auctionItem.getBids();
+
+        if (bids == null || bids.isEmpty()) {
+            auctionItem.setStatus(AuctionStatus.CANCELED);
+        } else {
+            Bid maxBid = bids.stream()
+                    .max(Comparator.comparing(Bid::getAmount))
+                    .orElseThrow();
+
+            auctionItem.setWinner(maxBid.getUserId());
+            auctionItem.setStatus(AuctionStatus.FINISHED);
+        }
+
         auctionItemRepository.save(auctionItem);
     }
 }

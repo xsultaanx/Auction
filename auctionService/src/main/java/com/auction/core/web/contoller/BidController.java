@@ -4,6 +4,9 @@ import com.auction.core.service.bidService.BidService;
 import com.auction.core.web.dto.request.BidDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/bid")
 public class BidController {
@@ -17,5 +20,10 @@ public class BidController {
     public ResponseEntity<?> uploadAuctionWithParam(@ModelAttribute BidDto dto) {
         bidService.placeBid(dto);
         return ResponseEntity.ok().body("success");
+    }
+
+    @PostMapping("/getBids")
+    public ResponseEntity<?> getById(@RequestParam UUID auctionId) {
+        return ResponseEntity.ok().body(bidService.getBidsForAuction(auctionId));
     }
 }
